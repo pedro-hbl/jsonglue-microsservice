@@ -1,0 +1,13 @@
+amount amt
+code cd
+date dt
+description desc
+identifier id
+indicator ind
+name nm
+number num
+quantity qty
+rate rt
+sound snd
+text txt
+time tm
