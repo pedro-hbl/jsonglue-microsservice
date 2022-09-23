@@ -17,7 +17,7 @@ def compGraph(graph1, graph2, node_number1, node_number2, file1index, file2index
                                 tmp.append(None)
                                 result.append(tmp)
                                 tmp = []
-                        else:
+                        else: #TODO quebrar aqui
                                 tmp.append(sin.compJaroWink(graph1, graph2, x, y)) 
                                 tmp.append(sem.wupSim(graph1, graph2, x, y))
                                 tmp.extend([data.compData(graph1, graph2, x, y)])

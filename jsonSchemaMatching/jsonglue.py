@@ -256,7 +256,7 @@ if (__name__ == "__main__"):
 
     if(filenum == 1):
         print("Não foi passado nenhum arquivo ou os arquivos não existem.")
-    elif(filenum > 2):
+    elif(filenum > 2): #TODO verificar se Jaro-winkler e instance based inicia aqui
         print('\nComparação de schemas iniciada.')
         if '-m' in flags:
             pool = mp.Pool(mp.cpu_count())
