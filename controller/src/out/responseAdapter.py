@@ -1,5 +1,4 @@
 
-
 def printResults(full):
     print('\n')
     for filecomp in full:
