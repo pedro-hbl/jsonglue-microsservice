@@ -7,26 +7,77 @@ ecs_client = boto3.client('ecs')
 
 sqs_queue = sqs_client.get_queue_by_name(QueueName='InputQueueJSONGLUE')
 
-metadado_mensagem = client.receive_message(
-    QueueUrl=sqs_queue.get_queue_url(),
-    AttributeNames=['All'],
-    MessageAttributeNames=[
-        'string',
-    ],
-    MaxNumberOfMessages=1
-)
+#processos permitidos: half(2 instancias), quarter(4 instancias), full(1 instancia)
 
-rangeSemantico = metadado_mensagem.message_attributes.get('rangeSemantico').get('StringValue')
-rangeInstancia = metadado_mensagem.message_attributes.get('rangeInstancia').get('StringValue')
-rangeLinguistico = metadado_mensagem.message_attributes.get('rangeLinguistico').get('StringValue')
+quantidadeDePodsSemantico = 2
+quantidadeDePodsInstancia = 2
+quantidadeDePodsLinguistico = 2
 
-quantidadeDePodsSemantico = metadado_mensagem.message_attributes.get('quantidadeDePodsSemantico').get('StringValue')
-quantidadeDePodsInstancia = metadado_mensagem.message_attributes.get('quantidadeDePodsInstancia').get('StringValue')
-quantidadeDePodsLinguistico = metadado_mensagem.message_attributes.get('quantidadeDePodsLinguistico').get('StringValue')
+tamanhoMaquinaSemantica = 'm5.2xlarge'
+tamanhoMaquinaInstancia = 'c7g.2xlarge'
+tamanhoMaquinaLinguistica = 'm5.2xlarge'
 
-tamanhoMaquinaSemantica = metadado_mensagem.message_attributes.get('quantidadeDePodsSemantico').get('StringValue')
-tamanhoMaquinaInstancia = metadado_mensagem.message_attributes.get('tamanhoMaquinaInstancia').get('StringValue')
-tamanhoMaquinaLinguistica = metadado_mensagem.message_attributes.get('tamanhoMaquinaLinguistica').get('StringValue')
+semantic_ranges = 0
+semantic_indexes = []
+for pods in range(quantidadeDePodsSemantico):
+
+    semantic_indexes.append(semantic_ranges)
+    send_message = sqs_client.send_message(
+        QueueUrl='https://sqs.sa-east-1.amazonaws.com/837696339822/fila-entrada-semantica-jsonglue',
+        DelaySeconds=0,
+        MessageAttributes={
+            'Header': {
+                'DataType': 'String',
+                'StringValue': 'Pod: ' + str(pods)
+            }
+        },
+        MessageBody=semantic_indexes
+    )
+    semantic_ranges+=1
+    print(send_message['MessageId'])
+
+
+instance_ranges = 0
+instance_indexes = []
+for pods in range(quantidadeDePodsInstancia):
+    instance_indexes.append(instance_ranges)
+    send_message = sqs_client.send_message(
+        QueueUrl='https://sqs.sa-east-1.amazonaws.com/837696339822/fila-entrada-instancia-jsonglue',
+        DelaySeconds=0,
+        MessageAttributes={
+            'Header': {
+                'DataType': 'String',
+                'StringValue': 'Pod: ' + str(pods)
+            }
+        },
+        MessageBody=instance_indexes
+    )
+    instance_ranges+=1
+    print(send_message['MessageId'])
+
+
+linguistic_ranges = 0
+linguistic_indexes = []
+for pods in range(tamanhoMaquinaLinguistica):
+    linguistic_indexes.append(linguistic_ranges)
+    send_message = sqs_client.send_message(
+        QueueUrl='https://sqs.sa-east-1.amazonaws.com/837696339822/fila-entrada-linguistica-jsonglue',
+        DelaySeconds=0,
+        MessageAttributes={
+            'Header': {
+                'DataType': 'String',
+                'StringValue': 'Pod: ' + str(pods)
+            }
+        },
+        MessageBody=linguistic_indexes
+    )
+    linguistic_ranges+=1
+    print(send_message['MessageId'])
+
+
+#ATÉ AQUI OK
+
+
 
 for i in range(quantidadeDePodsSemantico):
     inicia_tasks_semanticas = ecs_client.create_service(
