@@ -1,5 +1,9 @@
 import os
 import jsongenerator as jg
+import re  # regular expression
+from nltk.corpus import stopwords
+from nltk.tokenize import word_tokenize
+import data as dt
 
 def formatTime(t):
     s = t% 60
@@ -8,6 +12,14 @@ def formatTime(t):
     t = t / 60
     h = t
     return "{:02d}".format(int(h)) + 'h' + "{:02d}".format(int(m)) + 'm' + "{:02d}".format(int(s)) + 's'
+
+
+def auxMultipro(a, x, y):
+    b = dt.returnDataList(a, x, y)
+    c = dt.returnAver(b)
+    d = dt.buildHist(c)
+    e = dt.normData(d)
+    return e
 
 
 def loadNamingStd():

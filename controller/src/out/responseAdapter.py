@@ -1,3 +1,4 @@
+from colorama import Fore, Back, Style
 
 def printResults(full):
     print('\n')

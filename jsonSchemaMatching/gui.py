@@ -23,7 +23,7 @@ from functools import partial
 def loadNamingStd ():
     d_Names = {}
 
-    with open("NamingStandards.txt") as f:
+    with open("../controller/src/utils/NamingStandards.txt") as f:
         for line in f:
             (val, key) = line.split()
             d_Names[key] = val
